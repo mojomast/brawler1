@@ -58,3 +58,22 @@ Runtime server checks on ports `5173` and `5174` were blocked because both ports
 - Added stronger stage differentiation: festival barricades/tents, streaming screens, anti-arena signage, and scrolling props.
 - Strengthened Khn silhouette with beaked/pinched papier-mache head, double-neck microtonal instrument, loop module, cable, and toe controls.
 - Strengthened Klek silhouette with broad pyramid-boulder mask, sherpa/utility straps, asymmetric percussion rig, mallet/stick contrast, and matte drum props.
+
+## 2026-05-02 Prototype Complete Art Refactor Pass
+
+- Read design docs and final QA handoff constraints before changing art/code.
+- Extracted protagonist procedural rendering from `Player.js` into `src/game/entities/ProtagonistArt.js`.
+- Kept `Player.js` focused on gameplay state, movement, combat, hitboxes, and delegation to art helpers.
+- Preserved protagonist-only sparse costume dots, oversized papier-mache masks, Khn microtonal string identity, and Klek percussion identity.
+- Updated character select labels and HUD encounter text for better readability and theme alignment.
+- Updated hit particles from generic circles to simple slash, square, and diamond ritual glyphs.
+- Updated smoke test coverage to include the new protagonist art module.
+
+## 2026-05-02 Long-Nose Dot-Suit Persona Pass
+
+- Pushed Khn and Klek closer to the public stage persona while preserving abstraction and anonymity.
+- Enlarged both papier-mache mask noses into long readable proboscis/beak shapes.
+- Increased protagonist dot coverage into bold full-body suit bands on torsos, arms, legs, boots, and Khn's toe/foot details.
+- Strengthened Khn's double-neck microtonal guitar/bass with longer necks and denser irregular fret ticks.
+- Strengthened Klek's compact percussion rig with kick/snare/tom/cymbal shapes, mallet/stick contrast, and triangle/shockwave glyphs.
+- Added subtle triangle ritual props to stages while keeping enemies free of polka-dot protagonist costume language.

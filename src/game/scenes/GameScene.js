@@ -7,7 +7,11 @@ import { drawHud } from '../ui/Hud.js';
 import { clamp } from '../utils/math.js';
 
 export class GameScene {
-  constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.input = new Input(canvas); this.last = 0; this.selectedCharacter = 'khn'; this.reset('title'); }
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.input = new Input(canvas); this.last = 0; this.selectedCharacter = 'khn';
+    this.music = new Audio('/public/audio/theme-music.mp3'); this.music.loop = true; this.music.volume = 0.65; this.musicStarted = false;
+    this.reset('title');
+  }
   reset(mode = 'play') { this.player = new Player(220, 390, playerConfigs[this.selectedCharacter]); this.enemies = []; this.director = new WaveDirector(); this.fx = new Particles(); this.cameraX = 0; this.mode = mode; }
   start() { requestAnimationFrame((time) => this.loop(time)); }
   loop(time) { const dt = Math.min(0.033, (time - this.last) / 1000 || 0); this.last = time; this.update(dt); this.draw(); this.input.endFrame(); requestAnimationFrame((next) => this.loop(next)); }
@@ -18,7 +22,7 @@ export class GameScene {
     if (this.input.wasPressed('KeyP') && this.mode === 'play') this.mode = 'pause'; else if (this.input.wasPressed('KeyP') && this.mode === 'pause') this.mode = 'play';
     if (this.input.wasPressed('Enter')) {
       if (this.mode === 'title') this.mode = 'select';
-      else if (this.mode === 'select' || this.mode === 'lose' || this.mode === 'win') this.reset('play');
+      else if (this.mode === 'select' || this.mode === 'lose' || this.mode === 'win') { this.startMusic(); this.reset('play'); }
       else if (this.mode === 'pause') this.mode = 'play';
     }
     if (this.mode !== 'play') return;
@@ -56,7 +60,7 @@ export class GameScene {
     for (const button of this.menuButtons()) {
       if (!this.input.wasClickedIn(button)) continue;
       if (button.action === 'select') this.mode = 'select';
-      if (button.action === 'play') this.reset('play');
+      if (button.action === 'play') { this.startMusic(); this.reset('play'); }
       if (button.action === 'resume') this.mode = 'play';
       if (button.action === 'title') this.reset('title');
       if (button.action === 'khn') this.selectedCharacter = 'khn';
@@ -64,11 +68,17 @@ export class GameScene {
     }
   }
 
+  startMusic() {
+    if (this.musicStarted) return;
+    this.musicStarted = true;
+    this.music.play().catch(() => { this.musicStarted = false; });
+  }
+
   menuButtons() {
     if (this.mode === 'title') return [{ x: 370, y: 286, w: 220, h: 48, label: 'Start', action: 'select' }];
     if (this.mode === 'select') return [
-      { x: 230, y: 286, w: 220, h: 62, label: 'Khn: Guitar', action: 'khn', selected: this.selectedCharacter === 'khn' },
-      { x: 510, y: 286, w: 220, h: 62, label: 'Klek: Drums', action: 'klek', selected: this.selectedCharacter === 'klek' },
+      { x: 220, y: 286, w: 240, h: 62, label: 'Khn: Microtonal', action: 'khn', selected: this.selectedCharacter === 'khn' },
+      { x: 500, y: 286, w: 240, h: 62, label: 'Klek: Percussion', action: 'klek', selected: this.selectedCharacter === 'klek' },
       { x: 370, y: 380, w: 220, h: 48, label: 'Play', action: 'play' }
     ];
     if (this.mode === 'pause') return [
@@ -106,6 +116,7 @@ export class GameScene {
   drawStageProp(ctx, prop, palette) {
     ctx.save();
     if (prop.kind === 'pyramid') { ctx.fillStyle = '#8a4f2a'; ctx.beginPath(); ctx.moveTo(prop.x, 292); ctx.lineTo(prop.x + 55, 215); ctx.lineTo(prop.x + 110, 292); ctx.closePath(); ctx.fill(); }
+    if (prop.kind === 'triangle') { ctx.globalAlpha = 0.36; ctx.strokeStyle = '#f6e6b8'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(prop.x, 284); ctx.lineTo(prop.x + 52, 210); ctx.lineTo(prop.x + 104, 284); ctx.closePath(); ctx.stroke(); ctx.globalAlpha = 1; }
     if (prop.kind === 'sign') { ctx.fillStyle = palette.sign; ctx.fillRect(prop.x, 190, 240, 42); ctx.fillStyle = '#111018'; ctx.font = '20px system-ui, sans-serif'; ctx.fillText(prop.text, prop.x + 12, 218); }
     if (prop.kind === 'amp') { ctx.fillStyle = '#111018'; ctx.fillRect(prop.x, 220, 70, 72); ctx.strokeStyle = '#f6e6b8'; ctx.strokeRect(prop.x + 8, 230, 54, 44); ctx.fillStyle = '#4b2e83'; ctx.fillRect(prop.x + 14, 280, 42, 12); }
     if (prop.kind === 'curtain') { ctx.fillStyle = '#9e1b32'; for (let x = prop.x; x < prop.x + 150; x += 30) ctx.fillRect(x, 70, 20, 222); }

@@ -3,7 +3,7 @@ export function drawHud(ctx, player, director, enemies, mode, selectedCharacter,
   ctx.fillStyle = 'rgba(17,16,24,.74)'; ctx.fillRect(16, 14, 286, 78); ctx.fillRect(748, 14, 184, 78);
   bar(ctx, 24, 22, 260, 18, player.health / player.config.maxHealth, '#9e1b32', `${player.config.name} Health`);
   bar(ctx, 24, 50, 220, 14, player.meter / 100, '#ffd447', 'Special');
-  ctx.fillStyle = '#fff7e0'; ctx.fillText(`Stage ${director.stage + 1} / 4`, 760, 30); ctx.fillText(`Wave ${Math.min(director.wave, director.waves.length)} / ${director.waves.length}`, 760, 56); ctx.fillText(`Enemies ${enemies.length + director.pending}`, 760, 82);
+  ctx.fillStyle = '#fff7e0'; ctx.fillText(`Stage ${director.stage + 1} / 4`, 760, 30); ctx.fillText(`Encounter ${Math.min(director.wave, director.waves.length)} / ${director.waves.length}`, 760, 56); ctx.fillText(director.scrollLocked ? `Enemies ${enemies.length}` : 'Scroll to next gate', 760, 82);
   if (director.lastStageTitle > 0 && mode === 'play') stageCard(ctx, director.currentStage());
   if (mode !== 'play') overlay(ctx, mode, selectedCharacter, buttons, input);
   ctx.restore();
@@ -18,7 +18,7 @@ function overlay(ctx, mode, selectedCharacter = 'khn', buttons = [], input = nul
   ctx.fillStyle = '#fff7e0'; ctx.font = '48px system-ui, sans-serif';
   const title = mode === 'title' ? 'ANTI-ARENA' : mode === 'select' ? 'CHOOSE YOUR POITRINE' : mode === 'pause' ? 'PAUSED' : mode === 'win' ? 'ANTI-ARENA CLEARED' : 'GAME OVER';
   ctx.fillText(title, 480, 220); ctx.font = '20px system-ui, sans-serif';
-  const copy = mode === 'title' ? 'Press Enter for character select. Papier-mache anti-arena ritual.' : mode === 'select' ? `1 Khn: jagged microtonal guitar     2 Klek: heavy percussion     Selected: ${selectedCharacter.toUpperCase()}` : 'Press Enter to continue or restart.';
+  const copy = mode === 'title' ? 'Press Enter for character select. Papier-mache anti-arena ritual.' : mode === 'select' ? `Khn: microtonal guitar/bass fighter     Klek: percussion shockwave fighter     Selected: ${selectedCharacter.toUpperCase()}` : 'Press Enter to continue or restart.';
   ctx.fillText(copy, 480, 270);
   for (const button of buttons) drawButton(ctx, button, input?.isHovering(button));
   ctx.fillText('Move: WASD/Arrows  Jump: Space  Dash: Shift  Light/Heavy/Special: J/K/L  Pause: P', 480, 500); ctx.textAlign = 'left';

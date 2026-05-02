@@ -22,3 +22,5 @@ Dependency-free browser Canvas prototype for a 2D belt-scroll beat 'em up with o
 ## Current Scope
 
 Complete prototype pass: title, character select, Khn and Klek, regular enemy archetypes, four stages, three bosses, hit detection, health/special HUD, pause, win, lose, restart, generated geometric placeholder art.
+
+The local theme music starts after the player begins a run, because browsers block autoplay before user interaction.
