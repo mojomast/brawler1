@@ -77,3 +77,29 @@ Runtime server checks on ports `5173` and `5174` were blocked because both ports
 - Strengthened Khn's double-neck microtonal guitar/bass with longer necks and denser irregular fret ticks.
 - Strengthened Klek's compact percussion rig with kick/snare/tom/cymbal shapes, mallet/stick contrast, and triangle/shockwave glyphs.
 - Added subtle triangle ritual props to stages while keeping enemies free of polka-dot protagonist costume language.
+
+## 2026-05-02 Second Player Art Scale Pass
+
+- Made `ProtagonistArt.js` state-aware with idle/run/airborne/attack flags derived from player state.
+- Hid attack debug rectangles behind `DEBUG_ATTACK = false` and converted debug mode to thin outlines.
+- Further enlarged and cleaned Khn/Klek mask silhouettes, with longer nose shapes and simpler seam placement.
+- Tuned dot bands for controlled full-body coverage: smaller denser Khn dots, larger structured Klek dots.
+- Added stronger run/attack body and mask motion differences.
+- Added low-alpha triangle outlines to special attack glyphs.
+
+## 2026-05-02 Mobile Touch Controls Pass
+
+- Added mobile/touch detection in `main.js` using Client Hints, mobile UA matching, coarse pointer detection, and `?touch=1`/`?touch=0` debug overrides.
+- Added portrait rotate-to-landscape overlay and landscape touch-control layer in `index.html`.
+- Added virtual input methods to `Input.js` so touch controls reuse the existing key state sets.
+- Built on-screen D-pad and action buttons mapped to existing keyboard codes for movement, jump, dash, attacks, and pause.
+- Added release-all cleanup when touch controls are hidden to prevent stuck virtual keys during orientation/layout changes.
+
+## 2026-05-02 Encounter Bounds And Animation Readability Pass
+
+- Decoupled enemy encounter movement bounds from the shaded gate rectangle by using full-stage bounds for spawned encounter enemies and boss adds.
+- Increased enemy entry offsets so enemies can enter from beyond their target side instead of materializing in the gate strip.
+- Added player `attackPhase` and `attackPhaseLabel` state for startup, active, and recovery timing.
+- Updated Khn/Klek procedural art to read attack startup, active swing/strike, and recovery with distinct body, mask, instrument, mallet, and glyph poses.
+- Added enemy animation timing, attack phase derivation, state-specific bob/lean/lunge/hitstun/defeated transforms, and weapon-specific attack motion.
+- Added a persistent DOM music mute button wired through `GameScene.toggleMusicMuted()`.

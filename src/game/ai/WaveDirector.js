@@ -41,15 +41,20 @@ export class WaveDirector {
 
   startEncounter(encounter, enemies, player) {
     this.activeEncounter = encounter;
-    const bounds = { left: encounter.gate.left + 48, right: encounter.gate.right - 48 };
+    const bounds = this.enemyBounds();
     for (const spawn of encounter.enemies) {
       const isBoss = spawn.type.startsWith('boss:');
       const type = isBoss ? bossTypes[spawn.type.slice(5)] : enemyTypes[spawn.type];
       const targetX = spawn.x ?? clamp(player.x + (spawn.fromPlayerX || 220), bounds.left, bounds.right);
       const entrySide = targetX < player.x ? -1 : 1;
-      const entryX = clamp(targetX + entrySide * 130, bounds.left, bounds.right);
+      const entryX = clamp(targetX + entrySide * 220, bounds.left, bounds.right);
       enemies.push(new Enemy(entryX, spawn.y, { ...type, entryState: 'entering', targetX, bounds }));
     }
+  }
+
+  enemyBounds() {
+    const stage = this.currentStage();
+    return { left: 42, right: stage.worldWidth - 42 };
   }
 
   clearEncounter(player) { this.encounterIndex++; this.activeEncounter = null; player.x += 22; }
@@ -65,10 +70,12 @@ export class WaveDirector {
     if (!boss) return;
     boss.summonReady = false;
     const add = boss.config.phaseAdds?.[boss.phase - 2] || (boss.phase === 2 ? 'curator' : 'algorithm');
-    const gate = this.gateBounds;
-    const x = clamp(player.x + (boss.x > player.x ? -240 : 240), gate.left + 70, gate.right - 70);
+    const bounds = this.enemyBounds();
+    const side = boss.x > player.x ? -1 : 1;
+    const targetX = clamp(player.x + side * 130, bounds.left, bounds.right);
+    const x = clamp(targetX + side * 220, bounds.left, bounds.right);
     const y = clamp(player.y + (boss.phase === 2 ? -38 : 38), LANE_MIN, LANE_MAX);
-    enemies.push(new Enemy(x, y, { ...enemyTypes[add], entryState: 'entering', targetX: clamp(player.x + (boss.x > player.x ? -130 : 130), gate.left + 70, gate.right - 70), bounds: { left: gate.left + 48, right: gate.right - 48 } }));
+    enemies.push(new Enemy(x, y, { ...enemyTypes[add], entryState: 'entering', targetX, bounds }));
   }
 }
 

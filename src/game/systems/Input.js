@@ -16,6 +16,8 @@ export class Input {
 
   isDown(...codes) { return codes.some((code) => this.down.has(code)); }
   wasPressed(...codes) { return codes.some((code) => this.pressed.has(code)); }
+  pressVirtual(code) { if (!this.down.has(code)) this.pressed.add(code); this.down.add(code); }
+  releaseVirtual(code) { this.down.delete(code); }
   wasClickedIn(rect) { return this.mouse.clicked && this.mouse.x >= rect.x && this.mouse.x <= rect.x + rect.w && this.mouse.y >= rect.y && this.mouse.y <= rect.y + rect.h; }
   isHovering(rect) { return this.mouse.x >= rect.x && this.mouse.x <= rect.x + rect.w && this.mouse.y >= rect.y && this.mouse.y <= rect.y + rect.h; }
   endFrame() { this.pressed.clear(); this.mouse.clicked = false; }

@@ -7,7 +7,7 @@ export class Player {
     this.config = config;
     this.x = x; this.y = y; this.z = 0; this.vx = 0; this.vz = 0; this.facing = 1;
     this.w = 48; this.h = 88; this.health = this.config.maxHealth; this.meter = 0;
-    this.state = 'idle'; this.attack = null; this.attackTimer = 0; this.hitEnemies = new Set();
+    this.state = 'idle'; this.attack = null; this.attackTimer = 0; this.attackPhase = 0; this.attackPhaseLabel = 'idle'; this.hitEnemies = new Set();
     this.dashTimer = 0; this.dashCooldown = 0; this.invuln = 0; this.combo = 0; this.comboTimer = 0;
     this.bufferedAttack = null; this.bufferTimer = 0;
   }
@@ -60,12 +60,17 @@ export class Player {
   }
 
   startAttack(kind) {
-    this.attack = { kind, ...this.config.attacks[kind] }; this.attackTimer = 0; this.hitEnemies.clear(); this.state = kind;
+    this.attack = { kind, ...this.config.attacks[kind] }; this.attackTimer = 0; this.attackPhase = 0; this.attackPhaseLabel = 'startup'; this.hitEnemies.clear(); this.state = kind;
     if (kind === 'light') { this.combo = (this.combo % 3) + 1; this.comboTimer = 0.7; }
   }
 
   updateAttack(dt, enemies, fx) {
     this.attackTimer += dt;
+    const total = this.attack.startup + this.attack.active + this.attack.recovery;
+    this.attackPhase = Math.min(1, this.attackTimer / total);
+    if (this.attackTimer < this.attack.startup) this.attackPhaseLabel = 'startup';
+    else if (this.attackTimer <= this.attack.startup + this.attack.active) this.attackPhaseLabel = 'active';
+    else this.attackPhaseLabel = 'recovery';
     const active = this.attackTimer >= this.attack.startup && this.attackTimer <= this.attack.startup + this.attack.active;
     if (active) {
       const box = this.attackBox();
@@ -77,7 +82,7 @@ export class Player {
         }
       }
     }
-    if (this.attackTimer > this.attack.startup + this.attack.active + this.attack.recovery) this.attack = null;
+    if (this.attackTimer > total) { this.attack = null; this.attackPhase = 0; this.attackPhaseLabel = 'idle'; }
   }
 
   takeHit(damage, direction) {

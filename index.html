@@ -6,12 +6,33 @@
     <title>Anti-Arena Prototype</title>
     <style>
       :root { color-scheme: dark; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #111018; color: #fff7e0; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #111018; color: #fff7e0; font-family: system-ui, sans-serif; overflow: hidden; }
       canvas { width: min(100vw, 1280px); height: auto; max-height: 100vh; image-rendering: pixelated; background: #1c355e; box-shadow: 0 0 40px #000; }
+      #rotate-overlay { position: fixed; inset: 0; z-index: 20; display: none; place-items: center; padding: 24px; background: rgba(17, 16, 24, .94); text-align: center; }
+      #rotate-overlay .message { max-width: 520px; padding: 28px; border: 3px solid #ffd447; background: #111018; box-shadow: 0 0 32px #000; }
+      #rotate-overlay h1 { margin: 0 0 12px; font-size: clamp(28px, 8vw, 48px); color: #ffd447; }
+      #rotate-overlay p { margin: 0; font-size: clamp(16px, 4vw, 22px); color: #fff7e0; }
+      #touch-layer { position: fixed; inset: 0; z-index: 10; display: none; pointer-events: none; touch-action: none; user-select: none; }
+      #mute-button { position: fixed; top: max(14px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); z-index: 15; min-width: 92px; min-height: 40px; border: 2px solid #fff7e0; border-radius: 999px; background: rgba(17, 16, 24, .72); color: #fff7e0; font: 700 13px system-ui, sans-serif; box-shadow: 0 4px 14px #000; cursor: pointer; touch-action: manipulation; }
+      #mute-button.is-muted { border-color: #ffd447; color: #ffd447; }
+      body.mobile-landscape #touch-layer { display: block; }
+      body.mobile-portrait #rotate-overlay { display: grid; }
+      .touch-pad, .touch-actions { position: absolute; bottom: max(18px, env(safe-area-inset-bottom)); pointer-events: auto; touch-action: none; }
+      .touch-pad { left: max(18px, env(safe-area-inset-left)); width: 210px; height: 170px; }
+      .touch-actions { right: max(18px, env(safe-area-inset-right)); width: 290px; height: 190px; }
+      .touch-button { position: absolute; min-width: 62px; min-height: 62px; border: 2px solid #fff7e0; border-radius: 999px; background: rgba(17, 16, 24, .68); color: #fff7e0; font: 700 14px system-ui, sans-serif; display: grid; place-items: center; box-shadow: 0 4px 14px #000; pointer-events: auto; touch-action: none; -webkit-tap-highlight-color: transparent; }
+      .touch-button.active { background: #ffd447; color: #111018; transform: scale(.96); }
+      .touch-button.dpad { border-radius: 18px; }
+      .touch-up { left: 74px; top: 0; } .touch-down { left: 74px; top: 104px; } .touch-left { left: 0; top: 52px; } .touch-right { left: 148px; top: 52px; }
+      .touch-jump { right: 92px; top: 8px; } .touch-dash { right: 18px; top: 66px; } .touch-light { right: 168px; top: 66px; } .touch-heavy { right: 92px; top: 94px; } .touch-special { right: 18px; top: 132px; min-width: 72px; min-height: 72px; } .touch-pause { right: 222px; top: 0; min-width: 52px; min-height: 52px; font-size: 12px; }
+      @media (max-height: 430px) { .touch-button { min-width: 56px; min-height: 56px; font-size: 12px; } .touch-pad { transform: scale(.86); transform-origin: bottom left; } .touch-actions { transform: scale(.86); transform-origin: bottom right; } }
     </style>
   </head>
   <body>
     <canvas id="game" width="960" height="540" aria-label="Anti-Arena game canvas"></canvas>
+    <div id="rotate-overlay" aria-hidden="true"><div class="message"><h1>Rotate Device</h1><p>Rotate your device to landscape to play Anti-Arena.</p></div></div>
+    <div id="touch-layer" aria-hidden="true"></div>
+    <button id="mute-button" type="button" aria-pressed="false">Music On</button>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -74,6 +74,11 @@ export class GameScene {
     this.music.play().catch(() => { this.musicStarted = false; });
   }
 
+  toggleMusicMuted() {
+    this.music.muted = !this.music.muted;
+    return this.music.muted;
+  }
+
   menuButtons() {
     if (this.mode === 'title') return [{ x: 370, y: 286, w: 220, h: 48, label: 'Start', action: 'select' }];
     if (this.mode === 'select') return [
